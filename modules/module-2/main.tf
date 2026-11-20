@@ -29,7 +29,7 @@ resource "aws_vpc" "lab-vpc" {
 resource "aws_subnet" "lab-subnet-public-1" {
   vpc_id                  = aws_vpc.lab-vpc.id
   cidr_block              = "10.0.1.0/24"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
   availability_zone       = data.aws_availability_zones.available.names[0]
 }
 resource "aws_internet_gateway" "my_vpc_igw" {
@@ -58,7 +58,7 @@ resource "aws_subnet" "lab-subnet-public-1b" {
   vpc_id                  = aws_vpc.lab-vpc.id
   cidr_block              = "10.0.128.0/24"
   availability_zone       = data.aws_availability_zones.available.names[1]
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
 }
 resource "aws_route_table_association" "my_vpc_us_east_1b_public" {
   subnet_id      = aws_subnet.lab-subnet-public-1b.id
@@ -389,7 +389,7 @@ data "template_file" "user_data" {
 resource "aws_ecs_task_definition" "task_definition" {
   container_definitions    = data.template_file.task_definition_json.rendered
   family                   = "ECS-Lab-Task-definition"
-  network_mode             = "bridge"
+  network_mode             = "awsvpc"
   memory                   = "512"
   cpu                      = "512"
   requires_compatibilities = ["EC2"]
@@ -445,7 +445,7 @@ resource "aws_alb" "application_load_balancer" {
 resource "aws_lb_target_group" "target_group" {
   name        = "aws-goat-m2-tg"
   port        = 80
-  protocol    = "HTTP"
+  protocol    = "HTTPS"
   target_type = "instance"
   vpc_id      = aws_vpc.lab-vpc.id
 
