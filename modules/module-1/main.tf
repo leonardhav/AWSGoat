@@ -67,7 +67,7 @@ resource "aws_api_gateway_rest_api" "api" {
   name = "blog-application"
   endpoint_configuration {
     types = [
-      "REGIONAL"
+      "PRIVATE"
     ]
   }
 }
@@ -174,7 +174,7 @@ resource "aws_api_gateway_rest_api" "apiLambda_ba" {
   api_key_source = "HEADER"
   endpoint_configuration {
     types = [
-      "REGIONAL"
+      "PRIVATE"
     ]
   }
 }
@@ -3204,10 +3204,10 @@ resource "aws_s3_bucket" "bucket_upload" {
 resource "aws_s3_bucket_public_access_block" "bucket_upload" {
   bucket = aws_s3_bucket.bucket_upload.id
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket_upload" {
@@ -3288,10 +3288,10 @@ resource "aws_s3_bucket" "dev" {
 resource "aws_s3_bucket_public_access_block" "dev" {
   bucket = aws_s3_bucket.dev.id
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_ownership_controls" "dev" {
@@ -3308,7 +3308,7 @@ resource "aws_s3_bucket_acl" "dev" {
   ]
 
   bucket = aws_s3_bucket.dev.id
-  acl    = "public-read"
+  acl    = "private"
 }
 
 resource "aws_s3_bucket_policy" "allow_access_for_dev" {
@@ -3366,10 +3366,10 @@ resource "aws_s3_bucket" "bucket_temp" {
 resource "aws_s3_bucket_public_access_block" "bucket_temp" {
   bucket = aws_s3_bucket.bucket_temp.id
 
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_ownership_controls" "bucket_temp" {
@@ -3386,7 +3386,7 @@ resource "aws_s3_bucket_acl" "bucket_temp" {
   ]
 
   bucket = aws_s3_bucket.bucket_temp.id
-  acl    = "public-read"
+  acl    = "private"
 }
 
 /* Uploading all files to ec2-temp-bucket-ACCOUNT_ID bucket */
@@ -3441,7 +3441,7 @@ resource "aws_subnet" "goat_subnet" {
   vpc_id                  = aws_vpc.goat_vpc.id
   cidr_block              = "192.168.0.0/24"
   availability_zone       = "us-east-1a"
-  map_public_ip_on_launch = true
+  map_public_ip_on_launch = false
   tags = {
     Name = "AWS_GOAT App subnet"
   }
